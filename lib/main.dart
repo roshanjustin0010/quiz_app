@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'quiz_brain.dart';
+
+QuizBrain quizBrain = QuizBrain();
 
 void main() => runApp(Quizzler());
 
@@ -26,53 +29,51 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-
-  class _QuizPageState extends State<QuizPage> {
   List<Icon> scoreKeeper = [];
 
   void checkAnswer(bool userPickedAnswer) {
-  bool correctAnswer = QuizBrain.getCorrectAnswer();
+    bool? correctAnswer = quizBrain.getCorrectAnswer();
 
-  setState(() {
-  //TODO: Step 4 - Use IF/ELSE to check if we've reached the end of the quiz. If so,
-  //On the next line, you can also use if (quizBrain.isFinished()) {}, it does the same thing.
-  if (quizBrain.isFinished() == true) {
-  //TODO Step 4 Part A - show an alert using rFlutter_alert,
+    setState(() {
+      //TODO: Step 4 - Use IF/ELSE to check if we've reached the end of the quiz. If so,
+      //On the next line, you can also use if (quizBrain.isFinished()) {}, it does the same thing.
+      if (quizBrain.isFinished() == true) {
+        //TODO Step 4 Part A - show an alert using rFlutter_alert,
 
-  //This is the code for the basic alert from the docs for rFlutter Alert:
-  //Alert(context: context, title: "RFLUTTER", desc: "Flutter is awesome.").show();
+        //This is the code for the basic alert from the docs for rFlutter Alert:
+        //Alert(context: context, title: "RFLUTTER", desc: "Flutter is awesome.").show();
 
-  //Modified for our purposes:
-  // Alert(
-  // context: context,
-  // title: 'Finished!',
-  // desc: 'You\'ve reached the end of the quiz.',
-  // ).show();
+        //Modified for our purposes:
+        // Alert(
+        // context: context,
+        // title: 'Finished!',
+        // desc: 'You\'ve reached the end of the quiz.',
+        // ).show();
 
-  //TODO Step 4 Part C - reset the questionNumber,
-  quizBrain.reset();
+        //TODO Step 4 Part C - reset the questionNumber,
+        quizBrain.reset();
 
-  //TODO Step 4 Part D - empty out the scoreKeeper.
-  scoreKeeper = [];
+        //TODO Step 4 Part D - empty out the scoreKeeper.
+        scoreKeeper = [];
+      }
+      //TODO: Step 6 - If we've not reached the end, ELSE do the answer checking steps below 👇
+      else {
+        if (userPickedAnswer == correctAnswer) {
+          scoreKeeper.add(Icon(
+            Icons.check,
+            color: Colors.green,
+          ));
+        } else {
+          scoreKeeper.add(Icon(
+            Icons.close,
+            color: Colors.red,
+          ));
+        }
+        quizBrain.nextQuestion();
+      }
+    });
   }
-  //TODO: Step 6 - If we've not reached the end, ELSE do the answer checking steps below 👇
-  else {
-  if (userPickedAnswer == correctAnswer) {
-  scoreKeeper.add(Icon(
-  Icons.check,
 
-  color: Colors.green,
-  ));
-  } else {
-  scoreKeeper.add(Icon(
-  Icons.close,
-  color: Colors.red,
-  ));
-  }
-  quizBrain.nextQuestion();
-  }
-  });
-  }
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -85,7 +86,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-
+                quizBrain.getQuestionText(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
@@ -99,58 +100,48 @@ class _QuizPageState extends State<QuizPage> {
           child: Padding(
             padding: EdgeInsets.all(15.0),
             child: ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
-              ),
-              child: Text(
-                'True',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20.0,
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.green),
                 ),
-              ),
-              onPressed: () {
-                if (questions[questno] == answer[questno]) {
-                  print('its true');
+                child: Text(
+                  'True',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20.0,
+                  ),
+                ),
+                onPressed: () {
+                  checkAnswer(true);
                 }
-                ;
-                setState(() {
-                  questno++;
-                });
-                print('true button');
                 //The user picked true.
-              },
-            ),
+
+                ),
           ),
         ),
         Expanded(
           child: Padding(
             padding: EdgeInsets.all(15.0),
             child: ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                  Colors.red,
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Colors.red,
+                  ),
                 ),
-              ),
-              child: Text(
-                'False',
-                style: TextStyle(
-                  fontSize: 20.0,
-                  color: Colors.white,
+                child: Text(
+                  'False',
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-              onPressed: () {
-                if (correctans == answer[questno]) {
-                  print('its false');
+                onPressed: () {
+                  checkAnswer(false);
                 }
-                ;
-                setState(() {
-                  questno++;
-                });
-                print('false button');
+
                 //The user picked false.
-              },
-            ),
+
+                ),
           ),
         ),
         Padding(
@@ -161,7 +152,7 @@ class _QuizPageState extends State<QuizPage> {
             5.0,
           ),
           child: Row(
-            children: scorekeeper,
+            children: scoreKeeper,
           ),
         )
       ],
