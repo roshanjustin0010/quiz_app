@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 import 'quiz_brain.dart';
 
@@ -45,10 +46,27 @@ class _QuizPageState extends State<QuizPage> {
 
         //Modified for our purposes:
         // Alert(
-        // context: context,
-        // title: 'Finished!',
-        // desc: 'You\'ve reached the end of the quiz.',
+        //   context: context,
+        //   title: 'Finished!',
+        //   desc: 'You\'ve reached the end of the quiz.',
         // ).show();
+
+        Alert(
+          context: context,
+          type: AlertType.warning,
+          title: "FINISHED",
+          desc: "You\'ve reached the end of the quiz.",
+          buttons: [
+            DialogButton(
+              child: Text(
+                "START AGAIN",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+              onPressed: () => Navigator.pop(context),
+              width: 120,
+            )
+          ],
+        ).show();
 
         //TODO Step 4 Part C - reset the questionNumber,
         quizBrain.reset();
